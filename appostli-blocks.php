@@ -5,7 +5,7 @@
  * Plugin URI:  https://sawahsolutions.com
  * Author:      Mohamed Sawah
  * Author URI:  https://sawahsolutions.com
- * Version:     1.0.7
+ * Version:     1.0.8
  * Text Domain: appostli-blocks
  */
 
@@ -22,12 +22,14 @@ function register_appostli_blocks( $widgets_manager ) {
     require_once( __DIR__ . '/widgets/news-ticker.php' );
     require_once( __DIR__ . '/widgets/featured-news-large.php' );
     require_once( __DIR__ . '/widgets/latest-news-list.php' );
+    require_once( __DIR__ . '/widgets/text-news-list.php' );
 
     // Register the widgets
     $widgets_manager->register( new \Appostli_Retro_Divider() );
     $widgets_manager->register( new \Appostli_News_Ticker() );
     $widgets_manager->register( new \Appostli_Featured_News_Large() );
     $widgets_manager->register( new \Appostli_Latest_News_List() );
+    $widgets_manager->register( new \Appostli_Text_News_List() );
 }
 add_action( 'elementor/widgets/register', 'register_appostli_blocks' );
 

@@ -5,7 +5,7 @@
  * Plugin URI:  https://sawahsolutions.com
  * Author:      Mohamed Sawah
  * Author URI:  https://sawahsolutions.com
- * Version:     1.0.5
+ * Version:     1.0.6
  * Text Domain: appostli-blocks
  */
 

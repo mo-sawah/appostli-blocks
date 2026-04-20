@@ -86,7 +86,13 @@ class Appostli_Featured_News_Large extends \Elementor\Widget_Base {
                     <?php if ( has_post_thumbnail() ) : ?>
                         <div class="appostli-large-image">
                             <a href="<?php the_permalink(); ?>">
-                                <?php \Elementor\Group_Control_Image_Size::print_attachment_image_html( $settings, 'image', get_post_thumbnail_id() ); ?>
+                                <?php 
+                                // Inject the post thumbnail ID into the settings array so Elementor can find it
+                                $settings['image'] = [
+                                    'id' => get_post_thumbnail_id(),
+                                ];
+                                \Elementor\Group_Control_Image_Size::print_attachment_image_html( $settings, 'image', 'image' ); 
+                                ?>
                             </a>
                         </div>
                     <?php endif; ?>

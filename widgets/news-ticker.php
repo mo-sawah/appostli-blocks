@@ -21,7 +21,6 @@ class Appostli_News_Ticker extends \Elementor\Widget_Base {
         return [ 'general' ];
     }
 
-    // Helper function to get categories
     private function get_post_categories() {
         $categories = get_terms( [ 'taxonomy' => 'category', 'hide_empty' => false ] );
         $options = [];
@@ -33,7 +32,6 @@ class Appostli_News_Ticker extends \Elementor\Widget_Base {
         return $options;
     }
 
-    // Helper function to get tags
     private function get_post_tags() {
         $tags = get_terms( [ 'taxonomy' => 'post_tag', 'hide_empty' => false ] );
         $options = [];
@@ -47,11 +45,10 @@ class Appostli_News_Ticker extends \Elementor\Widget_Base {
 
     protected function register_controls() {
         
-        // --- QUERY SETTINGS ---
         $this->start_controls_section(
             'query_section',
             [
-                'label' => esc_html__( 'Query', 'appostli-blocks' ),
+                'label' => esc_html__( 'Query Settings', 'appostli-blocks' ),
                 'tab' => \Elementor\Controls_Manager::TAB_CONTENT,
             ]
         );
@@ -100,7 +97,6 @@ class Appostli_News_Ticker extends \Elementor\Widget_Base {
 
         $this->end_controls_section();
 
-        // --- STYLE SETTINGS ---
         $this->start_controls_section(
             'style_section',
             [
@@ -129,8 +125,30 @@ class Appostli_News_Ticker extends \Elementor\Widget_Base {
             [
                 'label' => esc_html__( 'Text Color', 'appostli-blocks' ),
                 'type' => \Elementor\Controls_Manager::COLOR,
+                'default' => '#FFFFFF',
                 'selectors' => [
                     '{{WRAPPER}} .appostli-ticker-item a' => 'color: {{VALUE}};',
+                ],
+            ]
+        );
+
+        $this->add_control(
+            'separator_char',
+            [
+                'label' => esc_html__( 'Separator Character', 'appostli-blocks' ),
+                'type' => \Elementor\Controls_Manager::TEXT,
+                'default' => '///',
+            ]
+        );
+
+        $this->add_control(
+            'separator_color',
+            [
+                'label' => esc_html__( 'Separator Color', 'appostli-blocks' ),
+                'type' => \Elementor\Controls_Manager::COLOR,
+                'default' => '#555555', // Subtle dark gray by default
+                'selectors' => [
+                    '{{WRAPPER}} .appostli-ticker-sep' => 'color: {{VALUE}};',
                 ],
             ]
         );
@@ -139,7 +157,7 @@ class Appostli_News_Ticker extends \Elementor\Widget_Base {
             \Elementor\Group_Control_Typography::get_type(),
             [
                 'name' => 'typography',
-                'selector' => '{{WRAPPER}} .appostli-ticker-item a',
+                'selector' => '{{WRAPPER}} .appostli-ticker-item a, {{WRAPPER}} .appostli-ticker-sep',
             ]
         );
 
@@ -164,7 +182,6 @@ class Appostli_News_Ticker extends \Elementor\Widget_Base {
             $args['tag__in'] = $settings['tag_filter'];
         }
 
-        // Apply Unique Filter
         if ( 'yes' === $settings['unique_posts'] && ! empty( $appostli_shown_posts ) ) {
             $args['post__not_in'] = $appostli_shown_posts;
         }
@@ -176,9 +193,10 @@ class Appostli_News_Ticker extends \Elementor\Widget_Base {
             <style>
                 .appostli-ticker-wrapper { overflow: hidden; white-space: nowrap; width: 100%; display: flex; }
                 .appostli-ticker-track { display: inline-block; white-space: nowrap; padding-left: 100%; animation: appostli-scroll linear infinite; }
-                .appostli-ticker-item { display: inline-block; padding-right: 80px; }
+                .appostli-ticker-item { display: inline-block; }
                 .appostli-ticker-item a { text-decoration: none; text-transform: uppercase; }
                 .appostli-ticker-item a:hover { opacity: 0.8; }
+                .appostli-ticker-sep { margin: 0 40px; } /* Adds the spacing around the separator */
                 @keyframes appostli-scroll {
                     0% { transform: translateX(0); }
                     100% { transform: translateX(-100%); }
@@ -190,13 +208,13 @@ class Appostli_News_Ticker extends \Elementor\Widget_Base {
                     <?php
                     while ( $query->have_posts() ) : $query->the_post();
                         
-                        // Add post to global array if Unique is checked
                         if ( 'yes' === $settings['unique_posts'] ) {
                             $appostli_shown_posts[] = get_the_ID();
                         }
                         ?>
                         <span class="appostli-ticker-item">
                             <a href="<?php the_permalink(); ?>"><?php the_title(); ?></a>
+                            <span class="appostli-ticker-sep"><?php echo esc_html( $settings['separator_char'] ); ?></span>
                         </span>
                     <?php endwhile; wp_reset_postdata(); ?>
                 </div>

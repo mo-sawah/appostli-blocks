@@ -35,10 +35,7 @@ class Appostli_Retro_Divider extends \Elementor\Widget_Base {
             [
                 'label' => esc_html__( 'Pixel Color', 'appostli-blocks' ),
                 'type' => \Elementor\Controls_Manager::COLOR,
-                'default' => '#FF00FF', // The pink from your mockup
-                'selectors' => [
-                    '{{WRAPPER}} .retro-pixel-line' => 'background-image: linear-gradient(to right, {{VALUE}} 50%, transparent 50%);',
-                ],
+                'default' => '#FF00FF',
             ]
         );
 
@@ -49,12 +46,16 @@ class Appostli_Retro_Divider extends \Elementor\Widget_Base {
                 'type' => \Elementor\Controls_Manager::SLIDER,
                 'size_units' => [ 'px' ],
                 'range' => [
-                    'px' => [ 'min' => 2, 'max' => 20, 'step' => 2 ],
+                    'px' => [ 'min' => 2, 'max' => 20, 'step' => 1 ],
                 ],
-                'default' => [ 'unit' => 'px', 'size' => 6 ],
+                // Defaulting to 4px to perfectly match the chunkiness of your mockup
+                'default' => [ 'unit' => 'px', 'size' => 4 ], 
                 'selectors' => [
-                    '{{WRAPPER}} .retro-pixel-line' => 'height: {{SIZE}}{{UNIT}}; background-size: calc({{SIZE}}{{UNIT}} * 2) 100%;',
-                    '{{WRAPPER}} .retro-pixel-spacer' => 'height: {{SIZE}}{{UNIT}};',
+                    // Uses exact pixel repeating gradients so they never stretch horizontally
+                    '{{WRAPPER}} .retro-line' => 'height: {{SIZE}}{{UNIT}}; background-image: repeating-linear-gradient(to right, {{color.VALUE}} 0, {{color.VALUE}} {{SIZE}}{{UNIT}}, transparent {{SIZE}}{{UNIT}}, transparent calc({{SIZE}}{{UNIT}} * 2));',
+                    '{{WRAPPER}} .retro-spacer' => 'height: {{SIZE}}{{UNIT}};',
+                    // Offsets the bottom line by 1 block to create the checkerboard effect
+                    '{{WRAPPER}} .retro-line-bottom' => 'background-position: {{SIZE}}{{UNIT}} 0;',
                 ],
             ]
         );
@@ -63,12 +64,11 @@ class Appostli_Retro_Divider extends \Elementor\Widget_Base {
     }
 
     protected function render() {
-        // Creates the double-row checkerboard style from the mockup
         ?>
         <div class="appostli-retro-divider-wrapper" style="width: 100%;">
-            <div class="retro-pixel-line"></div>
-            <div class="retro-pixel-spacer"></div>
-            <div class="retro-pixel-line" style="background-position: 100% 0;"></div>
+            <div class="retro-line"></div>
+            <div class="retro-spacer"></div>
+            <div class="retro-line retro-line-bottom"></div>
         </div>
         <?php
     }

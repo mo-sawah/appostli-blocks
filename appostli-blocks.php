@@ -1,0 +1,36 @@
+<?php
+/**
+ * Plugin Name: Appostli Blocks
+ * Description: Custom 8-bit retro blocks for Elementor (Divider & News Ticker).
+ * Plugin URI:  https://sawahsolutions.com
+ * Author:      Mohamed Sawah
+ * Author URI:  https://sawahsolutions.com
+ * Version:     1.0.0
+ * Text Domain: appostli-blocks
+ */
+
+if ( ! defined( 'ABSPATH' ) ) {
+    exit; // Exit if accessed directly.
+}
+
+/**
+ * Register Appostli Widgets.
+ */
+function register_appostli_blocks( $widgets_manager ) {
+    // Require the widget files
+    require_once( __DIR__ . '/widgets/retro-divider.php' );
+    require_once( __DIR__ . '/widgets/news-ticker.php' );
+
+    // Register the widgets
+    $widgets_manager->register( new \Appostli_Retro_Divider() );
+    $widgets_manager->register( new \Appostli_News_Ticker() );
+}
+add_action( 'elementor/widgets/register', 'register_appostli_blocks' );
+
+/**
+ * Initialize global variable to keep track of displayed posts for the "Unique" feature.
+ */
+add_action( 'wp', function() {
+    global $appostli_shown_posts;
+    $appostli_shown_posts = array();
+});

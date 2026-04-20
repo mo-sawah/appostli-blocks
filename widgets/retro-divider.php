@@ -35,7 +35,7 @@ class Appostli_Retro_Divider extends \Elementor\Widget_Base {
             [
                 'label' => esc_html__( 'Pixel Color', 'appostli-blocks' ),
                 'type' => \Elementor\Controls_Manager::COLOR,
-                'default' => '#FF00FF',
+                'default' => '#FF00FF', // The pink from the mockup
             ]
         );
 
@@ -48,14 +48,27 @@ class Appostli_Retro_Divider extends \Elementor\Widget_Base {
                 'range' => [
                     'px' => [ 'min' => 2, 'max' => 20, 'step' => 1 ],
                 ],
-                // Defaulting to 4px to perfectly match the chunkiness of your mockup
+                // Defaulting to 4px for that chunky retro vibe
                 'default' => [ 'unit' => 'px', 'size' => 4 ], 
                 'selectors' => [
-                    // Uses exact pixel repeating gradients so they never stretch horizontally
-                    '{{WRAPPER}} .retro-line' => 'height: {{SIZE}}{{UNIT}}; background-image: repeating-linear-gradient(to right, {{color.VALUE}} 0, {{color.VALUE}} {{SIZE}}{{UNIT}}, transparent {{SIZE}}{{UNIT}}, transparent calc({{SIZE}}{{UNIT}} * 2));',
-                    '{{WRAPPER}} .retro-spacer' => 'height: {{SIZE}}{{UNIT}};',
-                    // Offsets the bottom line by 1 block to create the checkerboard effect
-                    '{{WRAPPER}} .retro-line-bottom' => 'background-position: {{SIZE}}{{UNIT}} 0;',
+                    // This CSS mathematically draws the linked ++++ crosses perfectly
+                    '{{WRAPPER}} .retro-cross-line' => '
+                        height: calc({{SIZE}}{{UNIT}} * 3);
+                        background-image: 
+                            linear-gradient(90deg, transparent 50%, {{color.VALUE}} 50%),
+                            linear-gradient(90deg, {{color.VALUE}} 100%, transparent 100%),
+                            linear-gradient(90deg, transparent 50%, {{color.VALUE}} 50%);
+                        background-size: 
+                            calc({{SIZE}}{{UNIT}} * 2) {{SIZE}}{{UNIT}},
+                            calc({{SIZE}}{{UNIT}} * 2) {{SIZE}}{{UNIT}},
+                            calc({{SIZE}}{{UNIT}} * 2) {{SIZE}}{{UNIT}};
+                        background-position: 
+                            0 0,
+                            0 {{SIZE}}{{UNIT}},
+                            0 calc({{SIZE}}{{UNIT}} * 2);
+                        background-repeat: repeat-x;
+                        image-rendering: pixelated; /* Forces sharp edges on high-res screens */
+                    ',
                 ],
             ]
         );
@@ -64,11 +77,10 @@ class Appostli_Retro_Divider extends \Elementor\Widget_Base {
     }
 
     protected function render() {
+        // We only need one single div now! The CSS does all the heavy lifting.
         ?>
         <div class="appostli-retro-divider-wrapper" style="width: 100%;">
-            <div class="retro-line"></div>
-            <div class="retro-spacer"></div>
-            <div class="retro-line retro-line-bottom"></div>
+            <div class="retro-cross-line"></div>
         </div>
         <?php
     }

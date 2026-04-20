@@ -192,11 +192,17 @@ class Appostli_News_Ticker extends \Elementor\Widget_Base {
             ?>
             <style>
                 .appostli-ticker-wrapper { overflow: hidden; white-space: nowrap; width: 100%; display: flex; }
+                
+                /* The animation track */
                 .appostli-ticker-track { display: inline-block; white-space: nowrap; padding-left: 100%; animation: appostli-scroll linear infinite; }
+                
+                /* This freezes the animation when you hover over the wrapper! */
+                .appostli-ticker-wrapper:hover .appostli-ticker-track { animation-play-state: paused; }
+                
                 .appostli-ticker-item { display: inline-block; }
                 .appostli-ticker-item a { text-decoration: none; text-transform: uppercase; }
                 .appostli-ticker-item a:hover { opacity: 0.8; }
-                .appostli-ticker-sep { margin: 0 40px; } /* Adds the spacing around the separator */
+                .appostli-ticker-sep { margin: 0 40px; } 
                 @keyframes appostli-scroll {
                     0% { transform: translateX(0); }
                     100% { transform: translateX(-100%); }

@@ -35,11 +35,7 @@ class Appostli_Retro_Divider extends \Elementor\Widget_Base {
             [
                 'label' => esc_html__( 'Pixel Color', 'appostli-blocks' ),
                 'type' => \Elementor\Controls_Manager::COLOR,
-                'default' => '#FF00FF',
-                'selectors' => [
-                    // Save the chosen color as a CSS variable on the wrapper
-                    '{{WRAPPER}}' => '--retro-divider-color: {{VALUE}};',
-                ],
+                'default' => '#FF00FF', 
             ]
         );
 
@@ -53,26 +49,6 @@ class Appostli_Retro_Divider extends \Elementor\Widget_Base {
                     'px' => [ 'min' => 2, 'max' => 20, 'step' => 1 ],
                 ],
                 'default' => [ 'unit' => 'px', 'size' => 4 ], 
-                'selectors' => [
-                    // Draw the overlapping ++++ pattern using the CSS variable
-                    '{{WRAPPER}} .retro-cross-line' => '
-                        height: calc({{SIZE}}{{UNIT}} * 3);
-                        background-image: 
-                            linear-gradient(90deg, transparent 50%, var(--retro-divider-color) 50%),
-                            linear-gradient(90deg, var(--retro-divider-color) 100%, transparent 100%),
-                            linear-gradient(90deg, transparent 50%, var(--retro-divider-color) 50%);
-                        background-size: 
-                            calc({{SIZE}}{{UNIT}} * 2) {{SIZE}}{{UNIT}},
-                            calc({{SIZE}}{{UNIT}} * 2) {{SIZE}}{{UNIT}},
-                            calc({{SIZE}}{{UNIT}} * 2) {{SIZE}}{{UNIT}};
-                        background-position: 
-                            0 0,
-                            0 {{SIZE}}{{UNIT}},
-                            0 calc({{SIZE}}{{UNIT}} * 2);
-                        background-repeat: repeat-x;
-                        image-rendering: pixelated;
-                    ',
-                ],
             ]
         );
 
@@ -80,9 +56,37 @@ class Appostli_Retro_Divider extends \Elementor\Widget_Base {
     }
 
     protected function render() {
+        $settings = $this->get_settings_for_display();
+        
+        // Setup values
+        $color = !empty($settings['color']) ? $settings['color'] : '#FF00FF';
+        $size = !empty($settings['pixel_size']['size']) ? (float)$settings['pixel_size']['size'] : 4;
+        $unit = !empty($settings['pixel_size']['unit']) ? $settings['pixel_size']['unit'] : 'px';
+        
+        // This calculates a tiny gap between dots so they don't merge into a line!
+        $gap = $size * 0.15; 
+        $dot = $size * 0.70; 
+        
+        // The pattern repeats every 2 columns, which allows the left/right arms to be perfectly shared
+        $pattern_width = $size * 2;
+        $pattern_height = $size * 3;
+        
+        // Unique ID so multiple dividers on one page don't break
+        $svg_id = 'retro-cross-' . $this->get_id();
         ?>
-        <div class="appostli-retro-divider-wrapper" style="width: 100%;">
-            <div class="retro-cross-line"></div>
+        <div class="appostli-retro-divider-wrapper" style="width: 100%; height: <?php echo $pattern_height . $unit; ?>; line-height: 0;">
+            <svg width="100%" height="100%">
+                <defs>
+                    <pattern id="<?php echo $svg_id; ?>" x="0" y="0" width="<?php echo $pattern_width; ?>" height="<?php echo $pattern_height; ?>" patternUnits="userSpaceOnUse">
+                        <rect x="<?php echo 0 + $gap; ?>" y="<?php echo $size + $gap; ?>" width="<?php echo $dot; ?>" height="<?php echo $dot; ?>" fill="<?php echo esc_attr($color); ?>" />
+                        
+                        <rect x="<?php echo $size + $gap; ?>" y="<?php echo 0 + $gap; ?>" width="<?php echo $dot; ?>" height="<?php echo $dot; ?>" fill="<?php echo esc_attr($color); ?>" />
+                        <rect x="<?php echo $size + $gap; ?>" y="<?php echo $size + $gap; ?>" width="<?php echo $dot; ?>" height="<?php echo $dot; ?>" fill="<?php echo esc_attr($color); ?>" />
+                        <rect x="<?php echo $size + $gap; ?>" y="<?php echo ($size * 2) + $gap; ?>" width="<?php echo $dot; ?>" height="<?php echo $dot; ?>" fill="<?php echo esc_attr($color); ?>" />
+                    </pattern>
+                </defs>
+                <rect width="100%" height="100%" fill="url(#<?php echo $svg_id; ?>)" />
+            </svg>
         </div>
         <?php
     }

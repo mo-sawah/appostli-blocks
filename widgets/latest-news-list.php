@@ -37,6 +37,23 @@ class Appostli_Latest_News_List extends \Elementor\Widget_Base {
             'selectors' => [ '{{WRAPPER}} .appostli-list-image' => 'width: {{SIZE}}%;', '{{WRAPPER}} .appostli-list-content' => 'width: calc(100% - {{SIZE}}% - 20px);' ]
         ]);
 
+        $this->add_control('image_ratio', [
+            'label' => 'Image Aspect Ratio', 
+            'type' => \Elementor\Controls_Manager::SELECT,
+            'options' => [
+                'auto' => 'Original',
+                '1 / 1' => '1:1 (Square)',
+                '4 / 3' => '4:3 (Standard)',
+                '16 / 9' => '16:9 (Widescreen)',
+                '21 / 9' => '21:9 (Ultrawide)',
+                '3 / 4' => '3:4 (Portrait)',
+            ],
+            'default' => '16 / 9',
+            'selectors' => [ 
+                '{{WRAPPER}} .appostli-list-image img' => 'aspect-ratio: {{VALUE}}; object-fit: cover; width: 100%;' 
+            ]
+        ]);
+
         $this->add_control('show_meta', [ 'label' => 'Show Meta', 'type' => \Elementor\Controls_Manager::SWITCHER, 'default' => 'yes' ]);
         $this->add_control('show_excerpt', [ 'label' => 'Show Excerpt', 'type' => \Elementor\Controls_Manager::SWITCHER, 'default' => 'no' ]);
         

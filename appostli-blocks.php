@@ -5,7 +5,7 @@
  * Plugin URI:  https://sawahsolutions.com
  * Author:      Mohamed Sawah
  * Author URI:  https://sawahsolutions.com
- * Version:     1.0.14
+ * Version:     1.0.15
  * Text Domain: appostli-blocks
  */
 
@@ -60,7 +60,6 @@ function appostli_load_more_scripts() {
         'paged'          => $paged,
     );
 
-    // If we are on a category or author archive, pass those variables
     if (!empty($_POST['cat'])) $args['cat'] = intval($_POST['cat']);
     if (!empty($_POST['author'])) $args['author'] = intval($_POST['author']);
 
@@ -68,20 +67,23 @@ function appostli_load_more_scripts() {
 
     if ($query->have_posts()) :
         while ($query->have_posts()) : $query->the_post();
-            $author_id = get_the_author_meta('ID');
-            $avatar = get_avatar($author_id, 32); 
             ?>
-            <div class="appostli-post-card">
-                <div class="appostli-card-meta">
-                    <?php if ($avatar) echo '<div class="appostli-retro-avatar">' . $avatar . '</div>'; ?>
-                    <div class="appostli-card-meta-text">
-                        <span class="appostli-author">BY: <?php the_author(); ?></span><br>
-                        <span class="appostli-date"><?php echo get_the_date('d M Y'); ?></span>
+            <div class="appostli-list-item">
+                <?php if ( has_post_thumbnail() ) : ?>
+                    <div class="appostli-list-image">
+                        <a href="<?php the_permalink(); ?>">
+                            <?php the_post_thumbnail('large'); ?>
+                        </a>
                     </div>
+                <?php endif; ?>
+                <div class="appostli-list-content">
+                    <h3 class="appostli-list-title"><a href="<?php the_permalink(); ?>"><?php the_title(); ?></a></h3>
+                    <div class="appostli-list-meta">
+                        BY <?php the_author(); ?><br>
+                        <?php echo get_the_date('d F Y'); ?>
+                    </div>
+                    <div class="appostli-list-excerpt"><?php echo wp_trim_words( get_the_excerpt(), 20 ); ?></div>
                 </div>
-                <h3 class="appostli-card-title">
-                    <a href="<?php the_permalink(); ?>">> <?php the_title(); ?></a>
-                </h3>
             </div>
             <?php
         endwhile;
